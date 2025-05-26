@@ -39,18 +39,23 @@ export default {
       required: true
     }
   },
-  emits: ['update:modelValue'],
-  methods: {
+  emits: ['update:modelValue'],  methods: {
     updateValue(fieldId, value) {
       // Convert to number for number inputs
       const field = this.fields.find(f => f.id === fieldId)
-      const processedValue = field.type === 'number' ? Number(value) || 0 : value
+      let processedValue = value
+      
+      if (field.type === 'number') {
+        // Handle empty string and convert to number
+        processedValue = value === '' ? 0 : parseFloat(value) || 0
+      }
+      
+      // Create a new object to ensure reactivity
+      const updatedValues = { ...this.modelValue }
+      updatedValues[fieldId] = processedValue
       
       // Emit the updated values to parent component
-      this.$emit('update:modelValue', {
-        ...this.modelValue,
-        [fieldId]: processedValue
-      })
+      this.$emit('update:modelValue', updatedValues)
     }
   }
 }

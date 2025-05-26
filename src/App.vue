@@ -2,9 +2,7 @@
     <header class="text-center mb-3">
       <h1>💡 Power Bill Planner</h1>
       <p>Plan your weekly payments to stay on top of your power bills</p>
-    </header>
-
-    <!-- Save/Load Controls -->
+    </header>    <!-- Save/Load Controls -->
     <SaveLoadControls 
       :current-data="inputs"
       @load-data="handleLoadData"
@@ -15,14 +13,16 @@
       <InputSection
         title="📋 Billing Information"
         :fields="billingFields"
-        v-model="inputs"
+        :model-value="inputs"
+        @update:model-value="updateInputs"
       />
 
       <!-- Date Information Input -->
       <InputSection
         title="📅 Billing Cycle Dates"
         :fields="dateFields"
-        v-model="inputs"
+        :model-value="inputs"
+        @update:model-value="updateInputs"
       />
     </div>
 
@@ -281,12 +281,13 @@ export default {
       nextTuesday.setDate(today.getDate() + (daysUntilTuesday === 0 ? 7 : daysUntilTuesday))
       
       return Math.ceil((nextTuesday - today) / (1000 * 60 * 60 * 24))
-    })
-
-    // Methods for handling save/load operations
+    })    // Methods for handling save/load operations
     const handleLoadData = (savedData) => {
       // Update inputs with loaded data
       Object.assign(inputs, savedData)
+    }    // Method to handle input updates from child components
+    const updateInputs = (newValues) => {
+      Object.assign(inputs, newValues)
     }
 
     // Return all reactive data and computed properties
@@ -298,7 +299,8 @@ export default {
       formattedAdjustedEndDate,
       formattedNextCycleStart,
       daysUntilNextTuesday,
-      handleLoadData
+      handleLoadData,
+      updateInputs
     }
   }
 }
